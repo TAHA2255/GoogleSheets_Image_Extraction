@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables
+.env
+
+
+# VSCode or other IDE configs
+.vscode/
+*.swp
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Python egg
+*.egg-info/
+
+# Render deploy cache
+render.yaml
+
+credentials.json
