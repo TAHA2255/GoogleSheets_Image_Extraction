@@ -113,7 +113,7 @@ def webhook():
     if image_url:
         extracted_text = extract_text_from_drive_link(image_url)
         row = [name, json.dumps(extracted_text)]
-        #dest_sheet.append_row(row)
+        dest_sheet.append_row(row)
         return jsonify({"status": "success", "text": extracted_text})
     else:
         return jsonify({"status": "error", "message": "Missing image_url"}), 400
