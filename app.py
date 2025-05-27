@@ -11,6 +11,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import io
 import fitz  # PyMuPDF for PDF handling
+import re
 
 load_dotenv()
 
@@ -99,15 +100,25 @@ Medical Text:
 
 # ========== PDF EXTRACTOR ==========
 
+
+def extract_file_id(url):
+    # Match /d/FILE_ID or id=FILE_ID
+    patterns = [
+        r"/d/([a-zA-Z0-9_-]+)",        # /d/{id}/
+        r"id=([a-zA-Z0-9_-]+)",        # id={id}
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, url)
+        if match:
+            return match.group(1)
+    return None
+
 def extract_text_from_drive_pdf(pdf_url):
     try:
-        if "/d/" in pdf_url:
-            file_id = pdf_url.split("/d/")[1].split("/")[0]
-        elif "id=" in pdf_url:
-            file_id = pdf_url.split("id=")[1].split("&")[0]
-        else:
+        
+        file_id = extract_file_id(pdf_url)
+        if not file_id:
             return {"error": "Invalid Google Drive link format", "url": pdf_url}
-
         # Download PDF from Google Drive
         request = drive_service.files().get_media(fileId=file_id)
         fh = io.BytesIO()
