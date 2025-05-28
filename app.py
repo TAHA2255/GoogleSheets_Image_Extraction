@@ -137,20 +137,29 @@ def extract_text_from_drive_pdf(pdf_url):
 
         # Send to OpenAI for structured lab result extraction
         prompt = f"""
-You are a bilingual medical assistant. Read the following lab report and return a short summary of the most important results in JSON format:
+You are a bilingual medical assistant. From the lab report below, extract only the **abnormal test results** (low or high, not normal).
+
+Return a short bilingual summary with these rules:
+
+1. Mention the patient's name and age if available.
+2. Only include tests that are **outside the reference range**.
+3. Output should be in JSON format like this:
 
 {{
   "summary": {{
-    "english": "...",
-    "arabic": "..."
+    "english": "Short summary here...",
+    "arabic": "ملخص باللغة العربية هنا..."
   }}
 }}
 
-Only return valid JSON. Do not wrap it in backticks or markdown code blocks.
+4. Do NOT wrap the output in code blocks or markdown.
+5. Keep the summaries concise and understandable for patients.
 
 Lab Report:
 {extracted_text}
 """
+
+   
 
         completion = openai.ChatCompletion.create(
             model="gpt-4o-mini",
