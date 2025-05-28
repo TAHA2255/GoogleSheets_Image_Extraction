@@ -137,13 +137,16 @@ def extract_text_from_drive_pdf(pdf_url):
 
         # Send to OpenAI for structured lab result extraction
         prompt = f"""
-You are a bilingual medical assistant. Read the following lab report and provide a short, clear summary of the key patient information and important test results. Your summary should:
+You are a bilingual medical assistant. Read the following lab report and return a short summary of the most important results in JSON format:
 
-1. Mention the patient's name, age (if available), and file number (if present).
-2. Highlight only notable test results (e.g., those outside the normal range).
-3. Include two parts in your response:
-   - Part 1: Summary in English
-   - Part 2: Summary in Arabic
+{{
+  "summary": {{
+    "english": "...",
+    "arabic": "..."
+  }}
+}}
+
+Only return valid JSON. Do not wrap it in backticks or markdown code blocks.
 
 Lab Report:
 {extracted_text}
