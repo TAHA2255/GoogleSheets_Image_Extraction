@@ -214,7 +214,7 @@ def webhook_pdf():
 
     if pdf_url:
         result = extract_text_from_drive_pdf(pdf_url)
-        row = [name, json.dumps(result), ensure_ascii=False)]
+        row = [name, json.dumps(result, ensure_ascii=False)]
         pdf_sheet.append_row(row)
         return jsonify({"status": "success", "text": result})
     else:
