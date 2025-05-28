@@ -212,13 +212,23 @@ def webhook_pdf():
     pdf_url = data.get("pdf_url")
     name = data.get("name")
 
-    if pdf_url:
-        result = extract_text_from_drive_pdf(pdf_url)
-        row = [name, json.dumps(result, ensure_ascii=False)]
-        pdf_sheet.append_row(row)
-        return jsonify({"status": "success", "text": result})
-    else:
+    if not pdf_url:
         return jsonify({"status": "error", "message": "Missing pdf_url"}), 400
+
+    # Extract structured summary from PDF
+    result = extract_text_from_drive_pdf(pdf_url)
+
+    # Extract English & Arabic from result
+    summary = result.get("summary", {})
+    english = summary.get("english", "")
+    arabic = summary.get("arabic", "")
+
+    # Append to Google Sheet: [Name, English, Arabic]
+    row = [name, english, arabic]
+    pdf_sheet.append_row(row)
+
+    return jsonify({"status": "success", "text": result})
+
 
 
 if __name__ == "__main__":
