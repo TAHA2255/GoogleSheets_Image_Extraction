@@ -248,14 +248,6 @@ def webhook_pdf():
     english = summary.get("english", "")
     arabic = summary.get("arabic", "")
 
-
-    # Get the last row with data
-    last_row = len(pdf_sheet.get_all_values())
-
-    # Update column 58 (index 57) and 59 (index 58)
-    pdf_sheet.update_cell(last_row, 58, english)  # Column "Blood test English Summary"
-    pdf_sheet.update_cell(last_row, 59, arabic)   # Column "Blood test Arabic Summary"
-
     return jsonify({"status": "success", "text": result})
 
 
