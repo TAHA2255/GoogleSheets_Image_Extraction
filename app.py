@@ -34,7 +34,8 @@ drive_service = build('drive', 'v3', credentials=creds)
 
 # Sheets
 image_sheet = client.open("Online Clients Weight Analysis NEW (Responses)").worksheet("Image Data")
-pdf_sheet = client.open("Online Clients Weight Analysis NEW (Responses)").worksheet("Lab Reports")
+#pdf_sheet = client.open("Online Clients Weight Analysis NEW (Responses)").worksheet("Lab Reports")
+pdf_sheet = client.open("App Backend").worksheet("Sheet1")
 
 
 # ========== IMAGE EXTRACTOR ==========
@@ -226,6 +227,34 @@ def webhook_pdf():
     # Append to Google Sheet: [Name, English, Arabic]
     row = [name, english, arabic]
     pdf_sheet.append_row(row)
+
+    return jsonify({"status": "success", "text": result})
+
+
+@app.route("/webhook/pdfnew", methods=["POST"]) 
+def webhook_pdf():
+    data = request.json
+    pdf_url = data.get("pdf_url")
+    name = data.get("name")
+
+    if not pdf_url:
+        return jsonify({"status": "error", "message": "Missing pdf_url"}), 400
+
+    # Extract structured summary from PDF
+    result = extract_text_from_drive_pdf(pdf_url)
+
+    # Extract English & Arabic from result
+    summary = result.get("summary", {})
+    english = summary.get("english", "")
+    arabic = summary.get("arabic", "")
+
+
+    # Get the last row with data
+    last_row = len(pdf_sheet.get_all_values())
+
+    # Update column 58 (index 57) and 59 (index 58)
+    pdf_sheet.update_cell(last_row, 58, english)  # Column "Blood test English Summary"
+    pdf_sheet.update_cell(last_row, 59, arabic)   # Column "Blood test Arabic Summary"
 
     return jsonify({"status": "success", "text": result})
 
