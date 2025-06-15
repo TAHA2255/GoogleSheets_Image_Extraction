@@ -207,28 +207,28 @@ def webhook_image():
         return jsonify({"status": "error", "message": "Missing image_url"}), 400
 
 
-@app.route("/webhook/pdf", methods=["POST"])
-def webhook_pdf():
-    data = request.json
-    pdf_url = data.get("pdf_url")
-    name = data.get("name")
+# @app.route("/webhook/pdf", methods=["POST"])
+# def webhook_pdf():
+#     data = request.json
+#     pdf_url = data.get("pdf_url")
+#     name = data.get("name")
 
-    if not pdf_url:
-        return jsonify({"status": "error", "message": "Missing pdf_url"}), 400
+#     if not pdf_url:
+#         return jsonify({"status": "error", "message": "Missing pdf_url"}), 400
 
-    # Extract structured summary from PDF
-    result = extract_text_from_drive_pdf(pdf_url)
+#     # Extract structured summary from PDF
+#     result = extract_text_from_drive_pdf(pdf_url)
 
-    # Extract English & Arabic from result
-    summary = result.get("summary", {})
-    english = summary.get("english", "")
-    arabic = summary.get("arabic", "")
+#     # Extract English & Arabic from result
+#     summary = result.get("summary", {})
+#     english = summary.get("english", "")
+#     arabic = summary.get("arabic", "")
 
-    # Append to Google Sheet: [Name, English, Arabic]
-    row = [name, english, arabic]
-    pdf_sheet.append_row(row)
+#     # Append to Google Sheet: [Name, English, Arabic]
+#     row = [name, english, arabic]
+#     pdf_sheet.append_row(row)
 
-    return jsonify({"status": "success", "text": result})
+#     return jsonify({"status": "success", "text": result})
 
 
 @app.route("/webhook/pdfnew", methods=["POST"]) 
